@@ -94,6 +94,29 @@ class SearchPage extends Component {
     this.setState({
       isLoading: true
     });
+    fetch(query)
+      .then(res => res.json())
+      .then(json => this._handleResponse(json.response))
+      .catch(error => {
+        this.setState({
+          isLoading: false,
+          message: 'Something bad happened ' + error
+        });
+      });
+
+  }
+  _handleResponse(res) {
+    this.setState({
+      isLoading: false,
+      message: ''
+    })
+    if(res.application_response_code.substr(0,1) === '1') {
+      console.log('Properties found: ' + res.listings.length);
+    } else {
+      this.setState({
+        message: 'Location not recognized; Please try again.'
+      });
+    }
   }
   onSearchPressed() {
     let query = urlForQueryAndPage('place_name', this.state.searchString, 1);
